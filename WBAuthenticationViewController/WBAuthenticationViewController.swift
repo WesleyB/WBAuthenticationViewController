@@ -92,9 +92,7 @@ class WBAuthenticationViewController: UIViewController {
             $0.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadButton.dimension).isActive = true
         }
         
-        if scrambleKeys {
-            keypadButtons.shuffle()
-        }
+        if scrambleKeys { keypadButtons.shuffle() }
         
         indicatorStackView = UIStackView(subviews: indicatorViews)
         view.addSubview(indicatorStackView)
@@ -131,12 +129,13 @@ class WBAuthenticationViewController: UIViewController {
         keypadRow2.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         indicatorStackView.bottomAnchor.constraint(equalTo: keypadStackView.topAnchor, constant: -50).isActive = true
+        indicatorStackView.arrangedSubviews.forEach { $0.layoutIfNeeded() }
         
         infoLabel = UILabel()
         infoLabel.text = "Enter Passcode"
         view.addSubview(infoLabel)
         infoLabel.translatesAutoresizingMaskIntoConstraints = false
-        infoLabel.bottomAnchor.constraint(equalTo: indicatorStackView.topAnchor, constant: -10).isActive = true
+        infoLabel.bottomAnchor.constraint(equalTo: indicatorStackView.topAnchor, constant: -20).isActive = true
         infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     

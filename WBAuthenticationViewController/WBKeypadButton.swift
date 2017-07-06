@@ -13,25 +13,51 @@ class WBKeypadButton: UIButton {
     var identifier : Int = 0
     
     convenience init(identifier: Int) {
-        self.init(frame: CGRect.zero)
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.view.keypadButton.dimension, height: ViewDimensions.view.keypadButton.dimension)))
         
         self.identifier = identifier
         setup()
     }
     
-    override func draw(_ rect: CGRect) {
+    func setup() {
+        
+        backgroundColor = UIColor.white
+        
+        setTitle("\(identifier)", for: .normal)
+        setTitleColor(UIColor.black, for: .normal)
+        setTitleColor(UIColor.white, for: .highlighted)
+        translatesAutoresizingMaskIntoConstraints = false
         
         clipsToBounds = true
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 2
-        layer.cornerRadius = rect.width / 2
-        layer.backgroundColor = UIColor.clear.cgColor
     }
     
-    func setup() {
+    override func updateConstraints() {
+        super.updateConstraints()
         
-        setTitle("\(identifier)", for: .normal)
-        setTitleColor(UIColor.black, for: .normal)
-        translatesAutoresizingMaskIntoConstraints = false
+        layer.cornerRadius = frame.width / 2
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            self.backgroundColor = UIColor.black
+        })
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        
+        touchesEnded(touches, with: event)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            self.backgroundColor = UIColor.white
+        })
     }
 }
