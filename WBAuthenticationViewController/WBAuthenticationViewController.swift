@@ -24,9 +24,10 @@ class WBAuthenticationViewController: UIViewController {
     
     fileprivate var shouldOfferTouchID : Bool = true
     fileprivate var recording : Bool = false
-    fileprivate var recordingSecondPass : Bool = false
+    fileprivate var recordingVerification : Bool = false
     fileprivate var changingPasscode : Bool = false
     fileprivate var removingPasscode : Bool = false
+    fileprivate var scrambleKeys : Bool = true
     
     fileprivate var numberOfItemsPressed : Int = 0
     fileprivate var authString = ""
@@ -47,9 +48,33 @@ class WBAuthenticationViewController: UIViewController {
 
         setupViews()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if changingPasscode { infoLabel.text = "Enter Current Passcode" }
+        
+        if shouldOfferTouchID {
+            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+                authenticateWithFingerprint()
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        recording = false
+        recordingVerification = false
+        authString = ""
+        authCheckString = ""
+        numberOfItemsPressed = 0
+    }
 
     // MARK: - Functions
     func setupViews() {
+        
+        view.backgroundColor = UIColor.white
         
         (1...4).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
         (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
@@ -65,6 +90,10 @@ class WBAuthenticationViewController: UIViewController {
             $0.addTarget(self, action: #selector(keypadButtonPressed(_:)), for: .touchUpInside)
             $0.heightAnchor.constraint(equalToConstant: ViewDimensions.view.keypadButton.dimension).isActive = true
             $0.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadButton.dimension).isActive = true
+        }
+        
+        if scrambleKeys {
+            keypadButtons.shuffle()
         }
         
         indicatorStackView = UIStackView(subviews: indicatorViews)
@@ -111,64 +140,150 @@ class WBAuthenticationViewController: UIViewController {
         infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
-    // MARK: - Actions
+    func authenticateWithFingerprint() {
+        
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Unlock with Touch ID", reply: { [unowned self]
+            (success: Bool, error: Error?) -> Void in
+            
+            DispatchQueue.main.async {
+                if success {
+                    self.unwind()
+                }
+                
+                if let authError = error {
+                    
+                    let laError = LAError(_nsError: authError as NSError)
+                    
+                    var message = "An error occurred"
+                    var shouldDisplayAlert = true
+                    
+                    switch laError.code {
+                    case .authenticationFailed:
+                        message = "There was a problem verifying your identity"
+                    case .userCancel, .userFallback, .touchIDNotEnrolled:
+                        self.context.invalidate()
+                        self.shouldOfferTouchID = false
+                        shouldDisplayAlert = false
+                    default:
+                        message = "Touch ID may not be configured"
+                    }
+                    
+                    if shouldDisplayAlert {
+                        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+                        let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                        alert.addAction(action)
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+        })
+    }
     
+    func authenticate() {
+        
+        if authString == keychainWrapper.myObject(forKey: kSecValueData) as? String {
+            if !changingPasscode {
+                if removingPasscode {
+                    keychainWrapper.mySetObject("", forKey: kSecValueData)
+                    keychainWrapper.writeToKeychain()
+                    UserDefaults.standard.set(false, forKey: DataConstants.UserDefaults.wantsAuthentication.key)
+                    UserDefaults.standard.synchronize()
+                }
+                unwind()
+            } else {
+                setupForChangePasscode()
+            }
+        } else {
+            failedAuthentication()
+        }
+    }
+    
+    func setupForChangePasscode() {
+        
+        infoLabel.text = "Enter New Passcode"
+        authString = ""
+        resetIndicatorViews()
+        recording = true
+        changingPasscode = false
+    }
+    
+    func resetIndicatorViews() {
+        
+        indicatorViews.forEach { $0.animateUnfill() }
+        numberOfItemsPressed = 0
+    }
+    
+    func failedAuthentication() {
+        
+        infoLabel.text = "Incorrect Passcode"
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        indicatorStackView.shake(DataConstants.Animations.shake.duration, completion: { [unowned self] in
+            self.infoLabel.text = "Enter Passcode"
+            self.authString = ""
+            self.resetIndicatorViews()
+        })
+    }
+    
+    func failedRecordingPasscode() {
+        
+        infoLabel.text = "Passcodes do not match, try again"
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        indicatorStackView.shake(DataConstants.Animations.shake.duration, completion: { [unowned self] in
+            self.infoLabel.text = "Enter Passcode"
+            self.recordingVerification = false
+            self.authString = ""
+            self.authCheckString = ""
+            self.recording = true
+            self.resetIndicatorViews()
+        })
+    }
+    
+    func attemptRecordPasscode() {
+        
+        if authString == authCheckString {
+            keychainWrapper.mySetObject(authString, forKey: kSecValueData)
+            keychainWrapper.writeToKeychain()
+            UserDefaults.standard.set(true, forKey: DataConstants.UserDefaults.wantsAuthentication.key)
+            UserDefaults.standard.synchronize()
+            unwind()
+        } else {
+            failedRecordingPasscode()
+        }
+    }
+    
+    func resetForVerification() {
+        
+        infoLabel.text = "Re-enter Passcode"
+        recordingVerification = true
+        resetIndicatorViews()
+    }
+    
+    func unwind() {
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: - Actions
     func keypadButtonPressed(_ sender: WBKeypadButton) {
         
-        
-    }
-}
-
-struct ViewDimensions {
-    
-    enum view {
-        case keypadButton
-        case indicatorView
-        case indicatorStackView
-        case keypadRow
-        case keypadStackView
-        
-        var dimension : CGFloat {
-            switch self {
-            case .keypadButton: return UIScreen.main.bounds.width/5
-            case .indicatorView: return UIScreen.main.bounds.width/15
-            default: return 0
-            }
+        indicatorViews[numberOfItemsPressed].animateFillIn()
+        numberOfItemsPressed += 1
+        if !recordingVerification {
+            authString += sender.identifier.string
+        } else {
+            authCheckString += sender.identifier.string
         }
         
-        var width : CGFloat {
-            switch self {
-            case .indicatorStackView: return UIScreen.main.bounds.width/2.93
-            case .keypadRow: return UIScreen.main.bounds.width/1.34
-            default: return 0
-            }
-        }
-        
-        var height : CGFloat {
-            switch self {
-            case .keypadStackView: return UIScreen.main.bounds.height/1.933
-            default: return 0
+        if numberOfItemsPressed == 4 {
+            if recording == false {
+                authenticate()
+            } else {
+                if recordingVerification {
+                    attemptRecordPasscode()
+                } else {
+                    resetForVerification()
+                }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
