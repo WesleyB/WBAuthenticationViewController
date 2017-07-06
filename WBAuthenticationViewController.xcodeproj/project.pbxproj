@@ -12,6 +12,11 @@
 		C8B928111F0DF91C003B89EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8B9280F1F0DF91C003B89EB /* Main.storyboard */; };
 		C8B928131F0DF91C003B89EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8B928121F0DF91C003B89EB /* Assets.xcassets */; };
 		C8B928161F0DF91C003B89EB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8B928141F0DF91C003B89EB /* LaunchScreen.storyboard */; };
+		C8B9281E1F0DFA4C003B89EB /* WBAuthenticationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B9281D1F0DFA4C003B89EB /* WBAuthenticationViewController.swift */; };
+		C8B928211F0DFA72003B89EB /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = C8B928201F0DFA72003B89EB /* KeychainWrapper.m */; };
+		C8B928241F0DFE3E003B89EB /* WBIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B928231F0DFE3E003B89EB /* WBIndicatorView.swift */; };
+		C8B928261F0DFE5C003B89EB /* WBKeypadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B928251F0DFE5C003B89EB /* WBKeypadButton.swift */; };
+		C8B9282A1F0E08F0003B89EB /* UIStackView+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B928291F0E08F0003B89EB /* UIStackView+Init.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +27,13 @@
 		C8B928121F0DF91C003B89EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8B928151F0DF91C003B89EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C8B928171F0DF91C003B89EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C8B9281D1F0DFA4C003B89EB /* WBAuthenticationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WBAuthenticationViewController.swift; sourceTree = "<group>"; };
+		C8B9281F1F0DFA71003B89EB /* WBAuthenticationViewController-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WBAuthenticationViewController-Bridging-Header.h"; sourceTree = "<group>"; };
+		C8B928201F0DFA72003B89EB /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
+		C8B928221F0DFC79003B89EB /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
+		C8B928231F0DFE3E003B89EB /* WBIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WBIndicatorView.swift; sourceTree = "<group>"; };
+		C8B928251F0DFE5C003B89EB /* WBKeypadButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WBKeypadButton.swift; sourceTree = "<group>"; };
+		C8B928291F0E08F0003B89EB /* UIStackView+Init.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStackView+Init.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +66,15 @@
 		C8B9280A1F0DF91C003B89EB /* WBAuthenticationViewController */ = {
 			isa = PBXGroup;
 			children = (
+				C8B928291F0E08F0003B89EB /* UIStackView+Init.swift */,
 				C8B9280B1F0DF91C003B89EB /* AppDelegate.swift */,
 				C8B9280D1F0DF91C003B89EB /* ViewController.swift */,
+				C8B9281D1F0DFA4C003B89EB /* WBAuthenticationViewController.swift */,
+				C8B928231F0DFE3E003B89EB /* WBIndicatorView.swift */,
+				C8B928251F0DFE5C003B89EB /* WBKeypadButton.swift */,
+				C8B928221F0DFC79003B89EB /* KeychainWrapper.h */,
+				C8B928201F0DFA72003B89EB /* KeychainWrapper.m */,
+				C8B9281F1F0DFA71003B89EB /* WBAuthenticationViewController-Bridging-Header.h */,
 				C8B9280F1F0DF91C003B89EB /* Main.storyboard */,
 				C8B928121F0DF91C003B89EB /* Assets.xcassets */,
 				C8B928141F0DF91C003B89EB /* LaunchScreen.storyboard */,
@@ -96,6 +115,7 @@
 				TargetAttributes = {
 					C8B928071F0DF91C003B89EB = {
 						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -136,6 +156,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8B928261F0DFE5C003B89EB /* WBKeypadButton.swift in Sources */,
+				C8B928241F0DFE3E003B89EB /* WBIndicatorView.swift in Sources */,
+				C8B9281E1F0DFA4C003B89EB /* WBAuthenticationViewController.swift in Sources */,
+				C8B9282A1F0E08F0003B89EB /* UIStackView+Init.swift in Sources */,
+				C8B928211F0DFA72003B89EB /* KeychainWrapper.m in Sources */,
 				C8B9280E1F0DF91C003B89EB /* ViewController.swift in Sources */,
 				C8B9280C1F0DF91C003B89EB /* AppDelegate.swift in Sources */,
 			);
@@ -260,10 +285,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = WBAuthenticationViewController/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.WesleyBevins.WBAuthenticationViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WBAuthenticationViewController/WBAuthenticationViewController-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -272,10 +300,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = WBAuthenticationViewController/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.WesleyBevins.WBAuthenticationViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WBAuthenticationViewController/WBAuthenticationViewController-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
