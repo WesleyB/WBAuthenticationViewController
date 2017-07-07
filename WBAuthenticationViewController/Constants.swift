@@ -13,7 +13,6 @@ struct ViewDimensions {
     enum view {
         case keypadButton
         case indicatorView
-        case indicatorStackView
         case keypadRow
         case keypadStackView
         
@@ -27,7 +26,7 @@ struct ViewDimensions {
         
         var width : CGFloat {
             switch self {
-            case .indicatorStackView: return UIScreen.main.bounds.width/2.93
+            //case .indicatorStackView: return UIScreen.main.bounds.width/2.93
             case .keypadRow: return UIScreen.main.bounds.width/1.34
             default: return 0
             }

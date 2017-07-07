@@ -42,9 +42,7 @@ class WBKeypadButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
-        UIView.animate(withDuration: 0.1, animations: {
-            self.backgroundColor = UIColor.black
-        })
+        animateBackground(UIColor.black)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -56,8 +54,12 @@ class WBKeypadButton: UIButton {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         
+        animateBackground(UIColor.white)
+    }
+    
+    func animateBackground(_ withColor: UIColor) {
         UIView.animate(withDuration: 0.1, animations: {
-            self.backgroundColor = UIColor.white
+            self.backgroundColor = withColor
         })
     }
 }

@@ -64,14 +64,20 @@ class ViewController: UIViewController {
                 authenticationVC = WBAuthenticationViewController(recording: true, changing: false, removing: false)
             }
         case changePasscodeButton:
-            authenticationVC = WBAuthenticationViewController(recording: false, changing: true, removing: false)
+            if UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.wantsAuthentication.key) == true {
+                authenticationVC = WBAuthenticationViewController(recording: false, changing: true, removing: false)
+            }
         case removePasscodeButton:
-            authenticationVC = WBAuthenticationViewController(recording: false, changing: false, removing: true)
+            if UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.wantsAuthentication.key) == true {
+                authenticationVC = WBAuthenticationViewController(recording: false, changing: false, removing: true)
+            }
         default:
             break
         }
         
-        present(authenticationVC, animated: true, completion: nil)
+        if authenticationVC != nil {
+            present(authenticationVC, animated: true, completion: nil)
+        }
     }
 }
 

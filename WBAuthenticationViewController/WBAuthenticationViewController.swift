@@ -30,6 +30,7 @@ class WBAuthenticationViewController: UIViewController {
     fileprivate var scrambleKeys : Bool = true
     
     fileprivate var numberOfItemsPressed : Int = 0
+    fileprivate let passcodeLength : Int = 4
     fileprivate var authString = ""
     fileprivate var authCheckString = ""
     
@@ -76,7 +77,7 @@ class WBAuthenticationViewController: UIViewController {
         
         view.backgroundColor = UIColor.white
         
-        (1...4).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
+        (1...passcodeLength).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
         (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
         
         indicatorViews.forEach {
@@ -97,7 +98,8 @@ class WBAuthenticationViewController: UIViewController {
         indicatorStackView = UIStackView(subviews: indicatorViews)
         view.addSubview(indicatorStackView)
         indicatorStackView.translatesAutoresizingMaskIntoConstraints = false
-        indicatorStackView.widthAnchor.constraint(equalToConstant: ViewDimensions.view.indicatorStackView.width).isActive = true
+        let width = (ViewDimensions.view.indicatorView.dimension * CGFloat(passcodeLength)) + CGFloat(10 * (passcodeLength - 1))
+        indicatorStackView.widthAnchor.constraint(equalToConstant: width).isActive = true
         indicatorStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         let keypadRow1 = UIStackView(subviews: (1...3).map { keypadButtons[$0] }),
@@ -129,7 +131,6 @@ class WBAuthenticationViewController: UIViewController {
         keypadRow2.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         indicatorStackView.bottomAnchor.constraint(equalTo: keypadStackView.topAnchor, constant: -50).isActive = true
-        indicatorStackView.arrangedSubviews.forEach { $0.layoutIfNeeded() }
         
         infoLabel = UILabel()
         infoLabel.text = "Enter Passcode"
@@ -273,7 +274,7 @@ class WBAuthenticationViewController: UIViewController {
             authCheckString += sender.identifier.string
         }
         
-        if numberOfItemsPressed == 4 {
+        if numberOfItemsPressed == passcodeLength {
             if recording == false {
                 authenticate()
             } else {
