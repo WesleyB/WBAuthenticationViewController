@@ -40,7 +40,8 @@ class WBAuthenticationViewController: UIViewController {
     fileprivate var recordingVerification : Bool = false
     fileprivate var changingPasscode : Bool = false
     fileprivate var removingPasscode : Bool = false
-    fileprivate var scrambleKeys : Bool = true
+    
+    fileprivate var shouldScrambleButtons : Bool = true
     
     fileprivate var numberOfItemsPressed : Int = 0
     fileprivate let passcodeLength : Int = 4
@@ -88,8 +89,6 @@ class WBAuthenticationViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if changingPasscode { infoLabel.text = "Enter Current Passcode" }
-        
         if userWantsTouchID && shouldOfferTouchID {
             if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
                 authenticateWithFingerprint()
@@ -115,7 +114,8 @@ class WBAuthenticationViewController: UIViewController {
         view.backgroundColor = UIColor.white
         
         (1...passcodeLength).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
-        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier, autoGenerateSubtext: true)) }
+        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
+        /*["😀","😋","🦁","🐙","🐵","🐺","🐤","🐌","🐍","🐱"]*/
         
         indicatorViews.forEach {
             view.addSubview($0)
@@ -130,7 +130,7 @@ class WBAuthenticationViewController: UIViewController {
             $0.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadButtonSize).isActive = true
         }
         
-        if scrambleKeys { keypadButtons.shuffle() }
+        if shouldScrambleButtons { keypadButtons.shuffle() }
         
         indicatorStackView = UIStackView(subviews: indicatorViews)
         view.addSubview(indicatorStackView)
@@ -175,6 +175,8 @@ class WBAuthenticationViewController: UIViewController {
         infoLabel.translatesAutoresizingMaskIntoConstraints = false
         infoLabel.bottomAnchor.constraint(equalTo: indicatorStackView.topAnchor, constant: -20).isActive = true
         infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        if changingPasscode { infoLabel.text = "Enter Current Passcode" }
     }
     
     func authenticateWithFingerprint() {
@@ -306,9 +308,9 @@ class WBAuthenticationViewController: UIViewController {
         indicatorViews[numberOfItemsPressed].animateFillIn()
         numberOfItemsPressed += 1
         if !recordingVerification {
-            authString += sender.identifier.string
+            authString += sender.identifier
         } else {
-            authCheckString += sender.identifier.string
+            authCheckString += sender.identifier
         }
         
         if numberOfItemsPressed == passcodeLength {

@@ -53,6 +53,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C83274BF1F10674E00334240 /* KeychainWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				C8B928221F0DFC79003B89EB /* KeychainWrapper.h */,
+				C8B928201F0DFA72003B89EB /* KeychainWrapper.m */,
+			);
+			name = KeychainWrapper;
+			sourceTree = "<group>";
+		};
 		C8B927FF1F0DF91B003B89EB = {
 			isa = PBXGroup;
 			children = (
@@ -82,8 +91,7 @@
 				C8B9281D1F0DFA4C003B89EB /* WBAuthenticationViewController.swift */,
 				C8B928231F0DFE3E003B89EB /* WBIndicatorView.swift */,
 				C8B928251F0DFE5C003B89EB /* WBKeypadButton.swift */,
-				C8B928221F0DFC79003B89EB /* KeychainWrapper.h */,
-				C8B928201F0DFA72003B89EB /* KeychainWrapper.m */,
+				C83274BF1F10674E00334240 /* KeychainWrapper */,
 				C8B9281F1F0DFA71003B89EB /* WBAuthenticationViewController-Bridging-Header.h */,
 				C8B928121F0DF91C003B89EB /* Assets.xcassets */,
 				C8B928141F0DF91C003B89EB /* LaunchScreen.storyboard */,

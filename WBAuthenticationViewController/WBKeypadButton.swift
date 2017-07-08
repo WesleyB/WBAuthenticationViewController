@@ -10,37 +10,59 @@ import UIKit
 
 class WBKeypadButton: UIButton {
     
+    // MARK: - Variables
     var keyTitleLabel : UILabel!
     var keySublabel : UILabel?
     var keySublabelHeightAnchor : NSLayoutConstraint?
     
-    var identifier : Int = 0
+    var identifier : String = ""
     var subtext : String?
-    var shouldPadEmptySubtext : Bool = true
+    var shouldPadEmptySubtext : Bool = false
     
+    // MARK: - Initializers
     convenience init(identifier: Int) {
-        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        self.init()
         
-        self.identifier = identifier
+        self.identifier = identifier.string
         setup()
     }
     
     convenience init(identifier: Int, subtext: String?) {
-        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        self.init()
         
-        self.identifier = identifier
+        self.identifier = identifier.string
         self.subtext = subtext
         setup()
     }
     
     convenience init(identifier: Int, autoGenerateSubtext: Bool) {
-        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        self.init()
         
-        self.identifier = identifier
+        self.identifier = identifier.string
         self.subtext = generateSubtext(identifier)
         setup()
     }
     
+    convenience init(stringIdentifier: String) {
+        self.init()
+        
+        self.identifier = stringIdentifier
+        setup()
+    }
+    
+    convenience init(stringIdentifier: String, subtext: String?) {
+        self.init()
+        
+        self.identifier = stringIdentifier
+        self.subtext = subtext
+        setup()
+    }
+    
+    convenience init() {
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+    }
+    
+    // MARK: - Functions
     func setup() {
         
         backgroundColor = UIColor.white
@@ -98,12 +120,37 @@ class WBKeypadButton: UIButton {
         layer.masksToBounds = false
     }
     
+    func generateSubtext(_ identifier: Int) -> String? {
+        
+        switch identifier {
+        case 0, 1: return nil
+        case 2: return "A B C"
+        case 3: return "D E F"
+        case 4: return "G H I"
+        case 5: return "J K L"
+        case 6: return "M N O"
+        case 7: return "P Q R S"
+        case 8: return "T U V"
+        case 9: return "W X Y Z"
+        default: return nil
+        }
+    }
+    
+    func animateBackground(_ bg: UIColor, textColor: UIColor?) {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.backgroundColor = bg
+            self.keyTitleLabel.textColor = textColor
+            self.keySublabel?.textColor = textColor
+        })
+    }
+    
     override func updateConstraints() {
         super.updateConstraints()
         
         layer.cornerRadius = frame.width / 2
     }
     
+    // MARK: - Touch Methods
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
@@ -120,30 +167,6 @@ class WBKeypadButton: UIButton {
         super.touchesEnded(touches, with: event)
         
         animateBackground(UIColor.white, textColor: UIColor.black)
-    }
-    
-    func animateBackground(_ bg: UIColor, textColor: UIColor?) {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.backgroundColor = bg
-            self.keyTitleLabel.textColor = textColor
-            self.keySublabel?.textColor = textColor
-        })
-    }
-    
-    func generateSubtext(_ identifier: Int) -> String? {
-        
-        switch identifier {
-        case 0, 1: return nil
-        case 2: return "A B C"
-        case 3: return "D E F"
-        case 4: return "G H I"
-        case 5: return "J K L"
-        case 6: return "M N O"
-        case 7: return "P Q R S"
-        case 8: return "T U V"
-        case 9: return "W X Y Z"
-        default: return nil
-        }
     }
 }
 
