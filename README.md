@@ -14,6 +14,7 @@ The demo is a basic example where the initial vc presents the authentication vc.
 - Option to scramble keys to add a layer of abstraction between the keypad and prying eyes. No more memorizing people's passcodes by watching finger movement.
 - Option to authenticate with Touch ID
 - When supplied an Int as an identifier, keypad buttons can generate their subtext
+- Supports variable length passcodes (4, 6, or whatever you like).
 
 ## TODO:
 
