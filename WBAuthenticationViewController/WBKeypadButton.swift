@@ -59,7 +59,7 @@ class WBKeypadButton: UIButton {
     }
     
     convenience init() {
-        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: UIConstants.keypadButtonSize, height: UIConstants.keypadButtonSize)))
     }
     
     // MARK: - Functions
@@ -67,14 +67,14 @@ class WBKeypadButton: UIButton {
         
         backgroundColor = UIColor.white
         
-        let container = UIView(frame: CGRect(origin: CGPoint.zero, size: ViewDimensions.keypadLabelContainerSize))
+        let container = UIView(frame: CGRect(origin: CGPoint.zero, size: UIConstants.keypadLabelContainerSize))
         container.translatesAutoresizingMaskIntoConstraints = false
         addSubview(container)
         container.isUserInteractionEnabled = false
         container.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         container.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        container.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadLabelContainerSize.width).isActive = true
-        container.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadLabelContainerSize.height).isActive = true
+        container.widthAnchor.constraint(equalToConstant: UIConstants.keypadLabelContainerSize.width).isActive = true
+        container.heightAnchor.constraint(equalToConstant: UIConstants.keypadLabelContainerSize.height).isActive = true
         
         keyTitleLabel = UILabel()
         keyTitleLabel.font = UIFont(name: "HelveticaNeue-Light", size: 144)

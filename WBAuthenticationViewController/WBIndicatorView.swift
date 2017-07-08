@@ -11,7 +11,7 @@ import UIKit
 class WBIndicatorView: UIView {
     
     convenience init(tag: Int) {
-        self.init(frame: CGRect(x: 0, y: 0, width: ViewDimensions.indicatorViewSize, height: ViewDimensions.indicatorViewSize))
+        self.init(frame: CGRect(x: 0, y: 0, width: UIConstants.indicatorViewSize, height: UIConstants.indicatorViewSize))
         
         self.tag = tag
         setup()

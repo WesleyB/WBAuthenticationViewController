@@ -8,41 +8,10 @@
 
 import UIKit
 
-struct ViewDimensions {
+struct UIConstants {
     
-    enum view {
-        case keypadButton
-        case indicatorView
-        case keypadRow
-        case keypadStackView
-        
-        var dimension : CGFloat {
-            switch self {
-            case .keypadButton: return UIScreen.main.bounds.width/5
-            case .indicatorView: return UIScreen.main.bounds.width/15
-            default: return 0
-            }
-        }
-        
-        var width : CGFloat {
-            switch self {
-            //case .indicatorStackView: return UIScreen.main.bounds.width/2.93
-            case .keypadRow: return UIScreen.main.bounds.width/1.34
-            default: return 0
-            }
-        }
-        
-        var height : CGFloat {
-            switch self {
-            case .keypadStackView: return UIScreen.main.bounds.height/1.933
-                
-                
-                
-            default: return 0
-            }
-        }
-        
-    }
+    // 562 / 667 scale is based on iPhone 6 dimensions in pts
+    // keypadWidth / screenWidth
     
     static var indicatorViewSpacing : CGFloat {
         

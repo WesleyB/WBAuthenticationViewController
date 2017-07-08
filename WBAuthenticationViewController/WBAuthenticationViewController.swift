@@ -115,19 +115,18 @@ class WBAuthenticationViewController: UIViewController {
         
         (1...passcodeLength).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
         (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
-        /*["😀","😋","🦁","🐙","🐵","🐺","🐤","🐌","🐍","🐱"]*/
         
         indicatorViews.forEach {
             view.addSubview($0)
-            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.indicatorViewSize).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.indicatorViewSize).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: UIConstants.indicatorViewSize).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: UIConstants.indicatorViewSize).isActive = true
         }
         
         keypadButtons.forEach {
             view.addSubview($0)
             $0.addTarget(self, action: #selector(keypadButtonPressed(_:)), for: .touchUpInside)
-            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadButtonSize).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadButtonSize).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: UIConstants.keypadButtonSize).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: UIConstants.keypadButtonSize).isActive = true
         }
         
         if shouldScrambleButtons { keypadButtons.shuffle() }
@@ -135,7 +134,7 @@ class WBAuthenticationViewController: UIViewController {
         indicatorStackView = UIStackView(subviews: indicatorViews)
         view.addSubview(indicatorStackView)
         indicatorStackView.translatesAutoresizingMaskIntoConstraints = false
-        let width = (ViewDimensions.indicatorViewSize * CGFloat(passcodeLength)) + CGFloat(ViewDimensions.indicatorViewSpacing * CGFloat(passcodeLength - 1))
+        let width = (UIConstants.indicatorViewSize * CGFloat(passcodeLength)) + CGFloat(UIConstants.indicatorViewSpacing * CGFloat(passcodeLength - 1))
         indicatorStackView.widthAnchor.constraint(equalToConstant: width).isActive = true
         indicatorStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
@@ -146,13 +145,13 @@ class WBAuthenticationViewController: UIViewController {
         
         view.addSubview(keypadRow1)
         keypadRow1.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow1.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
+        keypadRow1.widthAnchor.constraint(equalToConstant: UIConstants.keypadRowWidth).isActive = true
         view.addSubview(keypadRow2)
         keypadRow2.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow2.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
+        keypadRow2.widthAnchor.constraint(equalToConstant: UIConstants.keypadRowWidth).isActive = true
         view.addSubview(keypadRow3)
         keypadRow3.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow3.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
+        keypadRow3.widthAnchor.constraint(equalToConstant: UIConstants.keypadRowWidth).isActive = true
         view.addSubview(keypadRow4)
         keypadRow4.translatesAutoresizingMaskIntoConstraints = false
         
@@ -162,7 +161,7 @@ class WBAuthenticationViewController: UIViewController {
         keypadStackView.distribution = .equalSpacing
         view.addSubview(keypadStackView)
         keypadStackView.translatesAutoresizingMaskIntoConstraints = false
-        keypadStackView.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadSize.height).isActive = true
+        keypadStackView.heightAnchor.constraint(equalToConstant: UIConstants.keypadSize.height).isActive = true
         
         keypadRow2.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         keypadRow2.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
