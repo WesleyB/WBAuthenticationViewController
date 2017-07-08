@@ -59,17 +59,17 @@ class ViewController: UIViewController {
         switch sender {
         case authenticateButton:
             if UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.wantsAuthentication.key) == true {
-                authenticationVC = WBAuthenticationViewController(recording: false, changing: false, removing: false)
+                authenticationVC = WBAuthenticationViewController(authMode: .authenticate)
             } else {
-                authenticationVC = WBAuthenticationViewController(recording: true, changing: false, removing: false)
+                authenticationVC = WBAuthenticationViewController(authMode: .setupPasscode)
             }
         case changePasscodeButton:
             if UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.wantsAuthentication.key) == true {
-                authenticationVC = WBAuthenticationViewController(recording: false, changing: true, removing: false)
+                authenticationVC = WBAuthenticationViewController(authMode: .changePasscode)
             }
         case removePasscodeButton:
             if UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.wantsAuthentication.key) == true {
-                authenticationVC = WBAuthenticationViewController(recording: false, changing: false, removing: true)
+                authenticationVC = WBAuthenticationViewController(authMode: .removePasscode)
             }
         default:
             break

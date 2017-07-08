@@ -10,12 +10,34 @@ import UIKit
 
 class WBKeypadButton: UIButton {
     
+    var keyTitleLabel : UILabel!
+    var keySublabel : UILabel?
+    var keySublabelHeightAnchor : NSLayoutConstraint?
+    
     var identifier : Int = 0
+    var subtext : String?
+    var shouldPadEmptySubtext : Bool = true
     
     convenience init(identifier: Int) {
-        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.view.keypadButton.dimension, height: ViewDimensions.view.keypadButton.dimension)))
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
         
         self.identifier = identifier
+        setup()
+    }
+    
+    convenience init(identifier: Int, subtext: String?) {
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        
+        self.identifier = identifier
+        self.subtext = subtext
+        setup()
+    }
+    
+    convenience init(identifier: Int, autoGenerateSubtext: Bool) {
+        self.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: ViewDimensions.keypadButtonSize, height: ViewDimensions.keypadButtonSize)))
+        
+        self.identifier = identifier
+        self.subtext = generateSubtext(identifier)
         setup()
     }
     
@@ -23,14 +45,57 @@ class WBKeypadButton: UIButton {
         
         backgroundColor = UIColor.white
         
-        setTitle("\(identifier)", for: .normal)
-        setTitleColor(UIColor.black, for: .normal)
-        setTitleColor(UIColor.white, for: .highlighted)
-        translatesAutoresizingMaskIntoConstraints = false
+        let container = UIView(frame: CGRect(origin: CGPoint.zero, size: ViewDimensions.keypadLabelContainerSize))
+        container.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(container)
+        container.isUserInteractionEnabled = false
+        container.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        container.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        container.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadLabelContainerSize.width).isActive = true
+        container.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadLabelContainerSize.height).isActive = true
         
-        clipsToBounds = true
+        keyTitleLabel = UILabel()
+        keyTitleLabel.font = UIFont(name: "HelveticaNeue-Light", size: 144)
+        keyTitleLabel.adjustsFontSizeToFitWidth = true
+        keyTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        keyTitleLabel.numberOfLines = 0
+        keyTitleLabel.textAlignment = .center
+        keyTitleLabel.text = "\(identifier)"
+        container.addSubview(keyTitleLabel)
+        keyTitleLabel.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+        keyTitleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
+
+        keySublabel = UILabel()
+        keySublabel?.font = UIFont(name: "HelveticaNeue-Light", size: 144)
+        keySublabel?.adjustsFontSizeToFitWidth = true
+        keySublabel?.translatesAutoresizingMaskIntoConstraints = false
+        keySublabel?.textAlignment = .center
+        keySublabel?.numberOfLines = 0
+        if subtext != nil {
+            keySublabel?.text = subtext
+        } else {
+            if shouldPadEmptySubtext {
+                keySublabel?.text = ""
+            }
+        }
+        container.addSubview(keySublabel!)
+        keySublabel?.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
+        keySublabel?.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
+        keySublabel?.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
+        keySublabelHeightAnchor = keySublabel?.heightAnchor.constraint(equalToConstant: 10)
+        keySublabelHeightAnchor?.isActive = true
+        keyTitleLabel.bottomAnchor.constraint(equalTo: keySublabel!.topAnchor).isActive = true
+
+        if subtext == nil && shouldPadEmptySubtext == false {
+            keySublabelHeightAnchor?.constant = 0
+            keySublabel?.updateConstraints()
+        }
+
+        translatesAutoresizingMaskIntoConstraints = false
+        clipsToBounds = false
         layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 2
+        layer.borderWidth = 1.5
+        layer.masksToBounds = false
     }
     
     override func updateConstraints() {
@@ -42,7 +107,7 @@ class WBKeypadButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
-        animateBackground(UIColor.black)
+        animateBackground(UIColor.black, textColor: UIColor.white)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -54,12 +119,55 @@ class WBKeypadButton: UIButton {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         
-        animateBackground(UIColor.white)
+        animateBackground(UIColor.white, textColor: UIColor.black)
     }
     
-    func animateBackground(_ withColor: UIColor) {
+    func animateBackground(_ bg: UIColor, textColor: UIColor?) {
         UIView.animate(withDuration: 0.1, animations: {
-            self.backgroundColor = withColor
+            self.backgroundColor = bg
+            self.keyTitleLabel.textColor = textColor
+            self.keySublabel?.textColor = textColor
         })
     }
+    
+    func generateSubtext(_ identifier: Int) -> String? {
+        
+        switch identifier {
+        case 0, 1: return nil
+        case 2: return "A B C"
+        case 3: return "D E F"
+        case 4: return "G H I"
+        case 5: return "J K L"
+        case 6: return "M N O"
+        case 7: return "P Q R S"
+        case 8: return "T U V"
+        case 9: return "W X Y Z"
+        default: return nil
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

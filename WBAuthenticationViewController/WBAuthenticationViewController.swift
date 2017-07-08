@@ -18,11 +18,24 @@ class WBAuthenticationViewController: UIViewController {
     fileprivate lazy var keypadButtons = [WBKeypadButton]()
     fileprivate var indicatorStackView : UIStackView!
     fileprivate var keypadStackView : UIStackView!
+    fileprivate var presenter : Any?
     
     fileprivate lazy var context = LAContext()
     fileprivate var keychainWrapper = KeychainWrapper()
     
+    fileprivate var userWantsTouchID : Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.touchIDEnabled.key)
+        }
+    }
     fileprivate var shouldOfferTouchID : Bool = true
+    enum AuthMode {
+        case authenticate
+        case setupPasscode
+        case changePasscode
+        case removePasscode
+    }
+    fileprivate var authMode : AuthMode!
     fileprivate var recording : Bool = false
     fileprivate var recordingVerification : Bool = false
     fileprivate var changingPasscode : Bool = false
@@ -34,8 +47,30 @@ class WBAuthenticationViewController: UIViewController {
     fileprivate var authString = ""
     fileprivate var authCheckString = ""
     
+    override var shouldAutorotate: Bool {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return false
+        }
+        return true
+    }
+    
     // MARK: - Initializers
-    convenience init(recording: Bool, changing: Bool, removing: Bool) {
+    convenience init(authMode: AuthMode) {
+        let recording = authMode == .setupPasscode,
+            changing = authMode == .changePasscode,
+            removing = authMode == .removePasscode
+        self.init(recording: recording, changing: changing, removing: removing)
+        self.recording = recording
+        self.changingPasscode = changing
+        self.removingPasscode = removing
+    }
+    
+    convenience init(authMode: AuthMode, presenter: Any) {
+        self.init(authMode: authMode)
+        self.presenter = presenter
+    }
+    
+    fileprivate convenience init(recording: Bool, changing: Bool, removing: Bool) {
         self.init()
         
         self.recording = recording
@@ -55,9 +90,11 @@ class WBAuthenticationViewController: UIViewController {
         
         if changingPasscode { infoLabel.text = "Enter Current Passcode" }
         
-        if shouldOfferTouchID {
+        if userWantsTouchID && shouldOfferTouchID {
             if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
                 authenticateWithFingerprint()
+            } else {
+                shouldOfferTouchID = false
             }
         }
     }
@@ -78,19 +115,19 @@ class WBAuthenticationViewController: UIViewController {
         view.backgroundColor = UIColor.white
         
         (1...passcodeLength).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
-        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
+        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier, autoGenerateSubtext: true)) }
         
         indicatorViews.forEach {
             view.addSubview($0)
-            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.view.indicatorView.dimension).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.view.indicatorView.dimension).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.indicatorViewSize).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.indicatorViewSize).isActive = true
         }
         
         keypadButtons.forEach {
             view.addSubview($0)
             $0.addTarget(self, action: #selector(keypadButtonPressed(_:)), for: .touchUpInside)
-            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.view.keypadButton.dimension).isActive = true
-            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadButton.dimension).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadButtonSize).isActive = true
+            $0.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadButtonSize).isActive = true
         }
         
         if scrambleKeys { keypadButtons.shuffle() }
@@ -98,7 +135,7 @@ class WBAuthenticationViewController: UIViewController {
         indicatorStackView = UIStackView(subviews: indicatorViews)
         view.addSubview(indicatorStackView)
         indicatorStackView.translatesAutoresizingMaskIntoConstraints = false
-        let width = (ViewDimensions.view.indicatorView.dimension * CGFloat(passcodeLength)) + CGFloat(10 * (passcodeLength - 1))
+        let width = (ViewDimensions.indicatorViewSize * CGFloat(passcodeLength)) + CGFloat(ViewDimensions.indicatorViewSpacing * CGFloat(passcodeLength - 1))
         indicatorStackView.widthAnchor.constraint(equalToConstant: width).isActive = true
         indicatorStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
@@ -109,13 +146,13 @@ class WBAuthenticationViewController: UIViewController {
         
         view.addSubview(keypadRow1)
         keypadRow1.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow1.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadRow.width).isActive = true
+        keypadRow1.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
         view.addSubview(keypadRow2)
         keypadRow2.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow2.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadRow.width).isActive = true
+        keypadRow2.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
         view.addSubview(keypadRow3)
         keypadRow3.translatesAutoresizingMaskIntoConstraints = false
-        keypadRow3.widthAnchor.constraint(equalToConstant: ViewDimensions.view.keypadRow.width).isActive = true
+        keypadRow3.widthAnchor.constraint(equalToConstant: ViewDimensions.keypadRowWidth).isActive = true
         view.addSubview(keypadRow4)
         keypadRow4.translatesAutoresizingMaskIntoConstraints = false
         
@@ -125,7 +162,7 @@ class WBAuthenticationViewController: UIViewController {
         keypadStackView.distribution = .equalSpacing
         view.addSubview(keypadStackView)
         keypadStackView.translatesAutoresizingMaskIntoConstraints = false
-        keypadStackView.heightAnchor.constraint(equalToConstant: ViewDimensions.view.keypadStackView.height).isActive = true
+        keypadStackView.heightAnchor.constraint(equalToConstant: ViewDimensions.keypadSize.height).isActive = true
         
         keypadRow2.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         keypadRow2.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true

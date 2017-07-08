@@ -11,7 +11,7 @@ import UIKit
 class WBIndicatorView: UIView {
     
     convenience init(tag: Int) {
-        self.init(frame: CGRect(x: 0, y: 0, width: ViewDimensions.view.indicatorView.dimension, height: ViewDimensions.view.indicatorView.dimension))
+        self.init(frame: CGRect(x: 0, y: 0, width: ViewDimensions.indicatorViewSize, height: ViewDimensions.indicatorViewSize))
         
         self.tag = tag
         setup()
@@ -22,10 +22,11 @@ class WBIndicatorView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = UIColor.clear
         
-        clipsToBounds = true
+        clipsToBounds = false
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = frame.width / 2
+        layer.masksToBounds = false
     }
     
     func animateFillIn() {
