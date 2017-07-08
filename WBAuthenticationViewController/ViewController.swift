@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     var authenticateButton : UIButton!
     var changePasscodeButton : UIButton!
     var removePasscodeButton : UIButton!
+    var touchIDSwitch : UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +51,21 @@ class ViewController: UIViewController {
         view.addSubview(removePasscodeButton)
         removePasscodeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         removePasscodeButton.topAnchor.constraint(equalTo: authenticateButton.bottomAnchor, constant: 20).isActive = true
+        
+        touchIDSwitch = UISwitch()
+        touchIDSwitch.translatesAutoresizingMaskIntoConstraints = false
+        touchIDSwitch.setOn(UserDefaults.standard.bool(forKey: DataConstants.UserDefaults.touchIDEnabled.key), animated: true)
+        touchIDSwitch.addTarget(self, action: #selector(touchIDSwitchToggled(_:)), for: .valueChanged)
+        view.addSubview(touchIDSwitch)
+        touchIDSwitch.bottomAnchor.constraint(equalTo: bottomLayoutGuide.topAnchor, constant: -30).isActive = true
+        touchIDSwitch.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        let touchIDLabel = UILabel()
+        touchIDLabel.translatesAutoresizingMaskIntoConstraints = false
+        touchIDLabel.text = "Enable Touch ID?"
+        view.addSubview(touchIDLabel)
+        touchIDLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        touchIDLabel.bottomAnchor.constraint(equalTo: touchIDSwitch.topAnchor, constant: -10).isActive = true
     }
 
     func buttonPressed(_ sender: UIButton) {
@@ -78,6 +94,12 @@ class ViewController: UIViewController {
         if authenticationVC != nil {
             present(authenticationVC, animated: true, completion: nil)
         }
+    }
+    
+    func touchIDSwitchToggled(_ sender: UISwitch) {
+        
+        UserDefaults.standard.set(sender.isOn, forKey: DataConstants.UserDefaults.touchIDEnabled.key)
+        UserDefaults.standard.synchronize()
     }
 }
 
