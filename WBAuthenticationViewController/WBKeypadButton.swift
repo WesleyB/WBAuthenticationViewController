@@ -17,7 +17,7 @@ class WBKeypadButton: UIButton {
     
     var identifier : String = ""
     var subtext : String?
-    var shouldPadEmptySubtext : Bool = false
+    var shouldPadEmptySubtext : Bool = true
     
     // MARK: - Initializers
     convenience init(identifier: Int) {

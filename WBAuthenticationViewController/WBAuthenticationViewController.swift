@@ -41,7 +41,7 @@ class WBAuthenticationViewController: UIViewController {
     fileprivate var changingPasscode : Bool = false
     fileprivate var removingPasscode : Bool = false
     
-    fileprivate var shouldScrambleButtons : Bool = true
+    fileprivate var shouldScrambleButtons : Bool = false
     
     fileprivate var numberOfItemsPressed : Int = 0
     fileprivate let passcodeLength : Int = 4
@@ -114,7 +114,7 @@ class WBAuthenticationViewController: UIViewController {
         view.backgroundColor = UIColor.white
         
         (1...passcodeLength).forEach { tag in indicatorViews.append(WBIndicatorView(tag: tag)) }
-        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier)) }
+        (0...9).forEach { identifier in keypadButtons.append(WBKeypadButton(identifier: identifier, autoGenerateSubtext: true)) }
         
         indicatorViews.forEach {
             view.addSubview($0)
